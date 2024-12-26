@@ -14,6 +14,7 @@ A zero-dependency TypeScript implementation of essential data structures and alg
 
 ```bash
 npm install algostructs
+```
 
 ## Usage
 
@@ -60,6 +61,8 @@ import { BinarySearchTree, Trie } from 'algostructs';
 
 ### Searching
 
+```
+
 import { Searching } from 'algostructs';
 
 const arr = [1, 2, 3, 4, 5];
@@ -69,9 +72,13 @@ console.log(result); // { element: 3, index: 2, comparisons: 2 }
 // Smart search that picks the best algorithm
 const smartResult = Searching.search(arr, 3);
 
-import { Sorting } from 'algostructs';
+```
 
 ### Sorting
+
+```
+
+import { Sorting } from 'algostructs';
 
 const arr = [3, 1, 4, 1, 5, 9];
 const sorted = Sorting.quickSort(arr);
@@ -80,6 +87,7 @@ console.log(sorted); // [1, 1, 3, 4, 5, 9]
 // Use optimal sorting based on array size
 const smartSorted = Sorting.sort(arr);
 
+```
 ## Key Benefits
 
 1. Immutable Operations: All operations return new instances, making your code more 2. predictable and easier to reason about.
@@ -99,4 +107,3 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 
 License
 MIT © [Joaquin Lopez]
-```
