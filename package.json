@@ -4,7 +4,11 @@
   "description": "All of the data structures Javascript is missing + some basic algorithm implementations.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rimraf dist && tsc",
+    "test": "jest",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test"
   },
   "keywords": [],
   "author": "",

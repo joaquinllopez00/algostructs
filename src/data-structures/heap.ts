@@ -7,7 +7,7 @@
  */
 export abstract class Heap<T> {
   /** @internal Internal storage for heap elements */
-  protected readonly elements: T[];
+  protected elements: T[];
 
   /**
    * Creates a new empty heap
@@ -106,12 +106,37 @@ export abstract class Heap<T> {
    * Note: Iterating will effectively sort the elements
    */
   *[Symbol.iterator](): Iterator<T> {
-    const heap = this.clone();
-    while (!heap.isEmpty()) {
-      const { element, heap: newHeap } = heap.remove();
-      if (element !== undefined) {
-        yield element;
+    // Make a shallow copy of elements
+    const elements = [...this.elements];
+    const size = elements.length;
+
+    // Now perform heapsort in-place
+    for (let i = size - 1; i > 0; i--) {
+      [elements[0], elements[i]] = [elements[i], elements[0]];
+      // Heapify the reduced heap
+      this.heapify(elements, 0, i);
+    }
+
+    // Yield the sorted elements
+    yield* elements.reverse();
+  }
+
+  private heapify(arr: T[], i: number, size: number): void {
+    while (true) {
+      let smallest = i;
+      const left = 2 * i + 1;
+      const right = 2 * i + 2;
+
+      if (left < size && this.compare(arr[left], arr[smallest]) < 0) {
+        smallest = left;
       }
+      if (right < size && this.compare(arr[right], arr[smallest]) < 0) {
+        smallest = right;
+      }
+      if (smallest === i) break;
+
+      [arr[i], arr[smallest]] = [arr[smallest], arr[i]];
+      i = smallest;
     }
   }
 
@@ -183,9 +208,18 @@ export class MinHeap<T> extends Heap<T> {
    * @returns A new MinHeap containing all elements
    */
   static from<T>(elements: T[]): MinHeap<T> {
-    return elements.reduce((heap, element) => heap.add(element), new MinHeap<T>());
-  }
+    if (!Array.isArray(elements)) {
+      throw new TypeError("Elements must be an array");
+    }
+    const heap = new MinHeap<T>();
+    heap.elements = [...elements];
 
+    // Heapify the array
+    for (let i = Math.floor(heap.elements.length / 2) - 1; i >= 0; i--) {
+      heap.bubbleDown(heap.elements, i);
+    }
+    return heap;
+  }
   /**
    * Creates a new MinHeap from a comparable type
    * @internal
@@ -231,7 +265,17 @@ export class MaxHeap<T> extends Heap<T> {
    * @returns A new MaxHeap containing all elements
    */
   static from<T>(elements: T[]): MaxHeap<T> {
-    return elements.reduce((heap, element) => heap.add(element), new MaxHeap<T>());
+    if (!Array.isArray(elements)) {
+      throw new TypeError("Elements must be an array");
+    }
+    const heap = new MaxHeap<T>();
+    heap.elements = [...elements];
+
+    // Heapify the array
+    for (let i = Math.floor(heap.elements.length / 2) - 1; i >= 0; i--) {
+      heap.bubbleDown(heap.elements, i);
+    }
+    return heap;
   }
 
   /**
@@ -271,6 +315,7 @@ export class MaxHeap<T> extends Heap<T> {
  */
 export class CustomHeap<T> extends Heap<T> {
   private readonly compareFn: (a: T, b: T) => number;
+  h: any;
 
   /**
    * Creates a new empty CustomHeap with the given comparison function
@@ -290,7 +335,17 @@ export class CustomHeap<T> extends Heap<T> {
    * @returns A new CustomHeap containing all elements
    */
   static from<T>(elements: T[], compareFn: (a: T, b: T) => number): CustomHeap<T> {
-    return elements.reduce((heap, element) => heap.add(element), new CustomHeap<T>(compareFn));
+    if (!Array.isArray(elements)) {
+      throw new TypeError("Elements must be an array");
+    }
+    const heap = new CustomHeap<T>(compareFn);
+    heap.elements = [...elements];
+
+    // Heapify the array
+    for (let i = Math.floor(heap.elements.length / 2) - 1; i >= 0; i--) {
+      heap.bubbleDown(heap.elements, i);
+    }
+    return heap;
   }
 
   /**
@@ -348,7 +403,17 @@ export class BinaryHeap<T> extends Heap<T> {
    * @returns A new BinaryHeap containing all elements
    */
   static from<T>(elements: T[], type: "min" | "max" = "min"): BinaryHeap<T> {
-    return elements.reduce((heap, element) => heap.add(element), new BinaryHeap<T>(type));
+    if (!Array.isArray(elements)) {
+      throw new TypeError("Elements must be an array");
+    }
+    const heap = new BinaryHeap<T>(type);
+    heap.elements = [...elements];
+
+    // Heapify the array
+    for (let i = Math.floor(heap.elements.length / 2) - 1; i >= 0; i--) {
+      heap.bubbleDown(heap.elements, i);
+    }
+    return heap;
   }
 
   /**

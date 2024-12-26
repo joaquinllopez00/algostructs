@@ -269,9 +269,7 @@ export class MaxPriorityQueue<T> {
    * Creates a new MaxPriorityQueue from an array of elements
    */
   static from<T>(elements: T[], compare?: CompareFn<T>): MaxPriorityQueue<T> {
-    const pq = new MaxPriorityQueue<T>(compare);
-    elements.forEach((element) => pq.enqueue(element));
-    return pq;
+    return elements.reduce((queue, element) => queue.enqueue(element), new MaxPriorityQueue<T>(compare));
   }
 
   // Delegate all operations to the internal queue
@@ -355,11 +353,8 @@ export class PriorityQueue<T> {
     if (!Array.isArray(elements)) {
       throw new TypeError("Elements must be an array");
     }
-    const pq = new PriorityQueue<T>(compare);
-    elements.forEach((element) => pq.enqueue(element));
-    return pq;
+    return elements.reduce((queue, element) => queue.enqueue(element), new PriorityQueue<T>(compare));
   }
-
   /**
    * Adds an element to the queue
    *
